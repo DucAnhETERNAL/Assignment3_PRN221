@@ -1,0 +1,103 @@
+﻿@page
+@model ShoppingWeb.Pages.Product.IndexModel
+
+@{
+	ViewData["Title"] = "Order Pizzas";
+}
+
+<h1>Pizzas</h1>
+<form method="get">
+	<div class="form-group">
+		<label for="SearchKeyword">Product Name</label>
+		<input type="text" name="SearchKeyword" id="SearchKeyword" value="@Model.SearchKeyword" class="form-control" />
+	</div>
+
+	<div class="form-group">
+		<label for="MinPrice">Min Price</label>
+		<input type="number" name="MinPrice" id="MinPrice" value="@Model.MinPrice" step="0.01" class="form-control" />
+	</div>
+
+	<div class="form-group">
+		<label for="MaxPrice">Max Price</label>
+		<input type="number" name="MaxPrice" id="MaxPrice" value="@Model.MaxPrice" step="0.01" class="form-control" />
+	</div>
+
+	<button type="submit" class="btn btn-primary">Search</button>
+</form>
+<p>
+	@if (HttpContext.Session.GetInt32("Type") == 1)
+	{
+		<a asp-page="Create">Create New</a>
+	}
+</p>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>
+				@Html.DisplayNameFor(model => model.Products[0].ProductName)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Products[0].QuantityPerUnit)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Products[0].UnitPrice)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Products[0].ProductImage)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Products[0].Supplier)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Products[0].Category)
+			</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model.Products)
+		{
+			<tr>
+				<td>
+					@Html.DisplayFor(modelItem => item.ProductName)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.QuantityPerUnit)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.UnitPrice)
+				</td>
+				<td>
+					@if (!string.IsNullOrEmpty(item.ProductImage))
+					{
+						<img src="@Url.Content(item.ProductImage)" alt="@item.ProductName" style="width: 100px; height: auto;" />
+					}
+					else
+					{
+						<span>No image available</span>
+					}
+				</td>
+
+				<td>
+					@Html.DisplayFor(modelItem => item.Supplier.CompanyName)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Category.CategoryName)
+				</td>
+				@if (HttpContext.Session.GetInt32("Type") == 1)
+				{
+					<td>
+						<a asp-page="./Edit" asp-route-id="@item.ProductID">Edit</a> |
+						<a asp-page="./Details" asp-route-id="@item.ProductID">Details</a>
+						<a asp-page="./Delete" asp-route-id="@item.ProductID">Delete</a>
+					</td>
+				}else{
+					<td>
+					<a asp-page="./Details" asp-route-id="@item.ProductID">Details</a>
+					</td>
+				}
+			</tr>
+		}
+	</tbody>
+</table>
